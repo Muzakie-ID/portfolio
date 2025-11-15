@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  portfolio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: portfolio-app-dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    restart: unless-stopped
+    networks:
+      - portfolio-network
+    volumes:
+      # Mount source code untuk development
+      - ./src:/app/src
+      - ./app:/app/app
+      - ./components:/app/components
+      - ./public:/app/public
+      - ./styles:/app/styles
+      # Node modules untuk cache
+      - portfolio-node-modules:/app/node_modules
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  portfolio-node-modules:
+    driver: local
+
+networks:
+  portfolio-network:
+    driver: bridge
