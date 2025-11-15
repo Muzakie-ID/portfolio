@@ -16,7 +16,7 @@ services:
     volumes:
       - ./public:/app/public:ro
       - ./logs:/app/.next/logs
-    restart: unless-stopped
+    healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000"]
       interval: 30s
       timeout: 10s
