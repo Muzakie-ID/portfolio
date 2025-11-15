@@ -29,8 +29,10 @@ COPY package*.json ./
 # Install only production dependencies
 RUN npm ci --only=production
 
-# Copy built app from builder
+# Copy built .next folder from builder
 COPY --from=builder /app/.next ./.next
+
+# Copy public folder from builder (Next.js default)
 COPY --from=builder /app/public ./public
 
 # Expose port

@@ -68,6 +68,9 @@ nano .env.production
 ### 4. Build dan Deploy
 
 ```bash
+# Masuk ke direktori portfolio
+cd /root/portfolio
+
 # Build image (pertama kali saja)
 docker-compose build
 
@@ -97,6 +100,9 @@ curl http://your-vps-ip:8089
 ```bash
 cd /root/portfolio
 docker-compose up -d
+
+# Atau jika menggunakan docker compose v2+
+docker compose up -d
 ```
 
 ### Stop aplikasi
@@ -179,8 +185,8 @@ Requires=docker.service
 [Service]
 Type=simple
 WorkingDirectory=/root/portfolio
-ExecStart=/usr/local/bin/docker-compose up -d
-ExecStop=/usr/local/bin/docker-compose down
+ExecStart=/usr/bin/docker-compose -f /root/portfolio/docker-compose.yaml up -d
+ExecStop=/usr/bin/docker-compose -f /root/portfolio/docker-compose.yaml down
 Restart=unless-stopped
 RestartSec=10
 
@@ -272,9 +278,16 @@ tar -czf portfolio-backup-$(date +%Y%m%d).tar.gz portfolio/
 ### Update aplikasi
 ```bash
 cd /root/portfolio
+
+# Pull latest changes
 git pull origin main
+
+# Rebuild dan restart
 docker-compose build --no-cache
 docker-compose up -d
+
+# Atau single command
+docker-compose up -d --build
 ```
 
 ## Port Information
